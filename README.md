@@ -1,5 +1,5 @@
 # Cypress2026
-Repo creado para guardar codigos cypress
+Repo creado para guardar los codigos de Cypress vistos en QA Autemation de Technology With Purpose
 ## README — Cypress QA Automation (Technology with Purpose by Santex)
 
 Descripción
