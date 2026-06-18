@@ -1,0 +1,45 @@
+describe('Reserva con fechas pasadas', () => {
+
+  it('No debería permitir realizar una reserva con fechas anteriores al día actual', () => {
+
+    // 1. Ingresar al sitio
+    cy.visit('https://automationintesting.online/#rooms')
+
+    // 2. Seleccionar una habitación
+    cy.get('.room-card a, .openBookingBtn')
+      .first()
+      .click({ force: true })
+
+    // 3. Seleccionar un rango de fechas anteriores al día actual
+    // Ajustar los selectores según la implementación real del calendario
+    cy.get('input[name="checkin"]')
+      .clear()
+      .type('01/01/2024')
+
+    cy.get('input[name="checkout"]')
+      .clear()
+      .type('05/01/2024')
+
+    // 4. Hacer clic en "Reserve now"
+    cy.contains('button', 'Reserve Now')
+      .click({ force: true })
+
+    // 5. Completar los datos del formulario
+    cy.get('input[name="firstname"]').type('Juan')
+    cy.get('input[name="lastname"]').type('Perez')
+    cy.get('input[name="email"]').type('juan.perez@test.com')
+    cy.get('input[name="phone"]').type('123456789')
+
+    // 7. Hacer clic en "Reserve now"
+    cy.contains('button', 'Reserve Now')
+      .click({ force: true })
+
+    // Validación esperada:
+    // La reserva no debe completarse y debe mostrarse un mensaje de error.
+    cy.contains(/error|invalid|unable|cannot|failed/i)
+      .should('be.visible')
+
+    // Validación adicional basada en el comportamiento observado
+    cy.url().should('not.include', 'booking-confirmation')
+  })
+})
