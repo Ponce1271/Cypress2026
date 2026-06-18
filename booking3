@@ -1,0 +1,55 @@
+describe('Validaciones del formulario de reserva', () => {
+
+  it('Debe mostrar mensajes de validación al intentar reservar con campos vacíos', () => {
+
+    // 1. Ingresar al sitio
+    cy.visit('https://automationintesting.online/')
+
+    // 2. Seleccionar fechas válidas
+    const today = new Date()
+    const checkIn = new Date(today)
+    checkIn.setDate(today.getDate() + 1)
+
+    const checkOut = new Date(today)
+    checkOut.setDate(today.getDate() + 3)
+
+    const formatDate = (date) => {
+      return date.toISOString().split('T')[0]
+    }
+
+    cy.get('input[name="checkin"]')
+      .clear()
+      .type(formatDate(checkIn))
+
+    cy.get('input[name="checkout"]')
+      .clear()
+      .type(formatDate(checkOut))
+
+    // 3. Hacer clic en "Check Availability"
+    cy.contains('button', 'Check Availability').click()
+
+    // 4. Seleccionar una habitación mediante "Book now"
+    cy.contains('button', 'Book now', { timeout: 10000 })
+      .first()
+      .click()
+
+    // 5. Hacer clic en "Reserve now"
+    cy.contains('button', 'Reserve Now').click()
+
+    // 6. Dejar todos los campos vacíos
+    // (No se completa ningún dato)
+
+    // 7. Hacer clic nuevamente en "Reserve now"
+    cy.contains('button', 'Reserve Now').click()
+
+    // Validaciones esperadas
+    cy.contains(/firstname/i).should('be.visible')
+    cy.contains(/lastname/i).should('be.visible')
+    cy.contains(/email/i).should('be.visible')
+    cy.contains(/phone/i).should('be.visible')
+
+    // Verificar que la reserva no se genere
+    cy.contains(/booking successful/i).should('not.exist')
+    cy.contains(/reservation confirmed/i).should('not.exist')
+  })
+})
