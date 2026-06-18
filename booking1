@@ -1,0 +1,45 @@
+describe('Reserva exitosa como usuario invitado', () => {
+
+  it('Debe generar una reserva correctamente y mostrar la confirmación', () => {
+
+    // 1. Ingresar al sitio
+    cy.visit('https://automationintesting.online/')
+
+    // 2. Ingresar fechas válidas
+    const checkInDate = '2026-07-15'
+    const checkOutDate = '2026-07-18'
+
+    cy.get('input[name="checkin"]').clear().type(checkInDate)
+    cy.get('input[name="checkout"]').clear().type(checkOutDate)
+
+    // 3. Hacer clic en "Check Availability"
+    cy.contains('button', 'Check Availability').click()
+
+    // 4. Hacer clic en "Book now"
+    cy.contains('Book now').first().click()
+
+    // 5. Hacer clic en "Reserve now"
+    cy.contains('button', 'Reserve Now').click()
+
+    // 6. Completar los datos del formulario
+    cy.get('input[name="firstname"]').type('Juan')
+    cy.get('input[name="lastname"]').type('Pérez')
+    cy.get('input[name="email"]').type('juan.perez@test.com')
+    cy.get('input[name="phone"]').type('3511234567')
+
+    // 7. Hacer clic en "Reserve now"
+    cy.contains('button', 'Reserve Now').click()
+
+    // Validación del resultado esperado
+    cy.contains('Booking Confirmed', { timeout: 10000 }).should('be.visible')
+
+    // Verificar que se muestran los datos ingresados
+    cy.contains('Juan').should('be.visible')
+    cy.contains('Pérez').should('be.visible')
+    cy.contains('juan.perez@test.com').should('be.visible')
+
+    // Verificar que se muestran las fechas seleccionadas
+    cy.contains(checkInDate).should('be.visible')
+    cy.contains(checkOutDate).should('be.visible')
+  })
+})
